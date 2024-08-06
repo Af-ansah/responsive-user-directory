@@ -1,20 +1,20 @@
 <div class="table-container">
-    <table>
-      <thead>
-        <tr>
-          <th (click)="sort('name')">Name</th>
-          <th (click)="sort('email')">Email</th>
-          <th (click)="sort('phone')">Phone</th>
-          <th (click)="sort('website')">Website</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let item of data">
-          <td data-label="Name">{{item.name}}</td>
-          <td data-label="Email">{{item.email}}</td>
-          <td data-label="Phone">{{item.phone}}</td>
-          <td data-label="Website">{{item.website}}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  <table>
+    <thead>
+      <tr>
+        <th (click)="sort('name')" [class.active]="isColumnActive('name')" [attr.data-icon]="getSortIcon('name')">Name</th>
+        <th (click)="sort('email')" [class.active]="isColumnActive('email')" [attr.data-icon]="getSortIcon('email')">Email</th>
+        <th (click)="sort('phone')" [class.active]="isColumnActive('phone')" [attr.data-icon]="getSortIcon('phone')">Phone</th>
+        <th (click)="sort('website')" [class.active]="isColumnActive('website')" [attr.data-icon]="getSortIcon('website')">Website</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of data">
+        <td data-label="Name">{{item.name}}</td>
+        <td data-label="Email">{{item.email}}</td>
+        <td data-label="Phone">{{item.phone}}</td>
+        <td data-label="Website">{{item.website}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
