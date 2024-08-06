@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { User } from '../user.interface';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-data-table',
@@ -14,6 +15,7 @@ export class DataTableComponent implements OnInit {
   data: User[] = [];
   sortColumn: keyof User = 'name';
   sortDirection: 'asc' | 'desc' = 'asc';
+  private destroy$ = new Subject<void>();
 
   constructor(private http: HttpClient) {}
 
@@ -21,12 +23,19 @@ export class DataTableComponent implements OnInit {
     this.fetchData();
   }
 
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   fetchData() {
     this.http.get<User[]>('https://jsonplaceholder.typicode.com/users')
-      .subscribe(response => {
+    .pipe(takeUntil(this.destroy$))
+    .subscribe(response => {
         this.data = response;
         this.sortData();
-      });
+    });
   }
 
   sort(column: keyof User) {
