@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { User } from '../user.interface';
 import { Subject, takeUntil } from 'rxjs';
+import { UserService } from '../user.service';
 
 @Component({
   selector: 'app-data-table',
@@ -17,7 +18,7 @@ export class DataTableComponent implements OnInit {
   sortDirection: 'asc' | 'desc' = 'asc';
   private destroy$ = new Subject<void>();
 
-  constructor(private http: HttpClient) {}
+  constructor(private userService: UserService) {}
 
   ngOnInit() {
     this.fetchData();
@@ -29,13 +30,15 @@ export class DataTableComponent implements OnInit {
     this.destroy$.complete();
   }
 
-  fetchData() {
-    this.http.get<User[]>('https://jsonplaceholder.typicode.com/users')
-    .pipe(takeUntil(this.destroy$))
-    .subscribe(response => {
-        this.data = response;
-        this.sortData();
-    });
+  fetchData(): void {
+    this.userService.getUsers().subscribe(
+      (users: User[]) => {
+        this.data = users;
+      },
+      (error) => {
+        console.error('Error fetching users:', error);
+      }
+    );
   }
 
   sort(column: keyof User) {
@@ -47,8 +50,8 @@ export class DataTableComponent implements OnInit {
     }
     this.sortData();
   }
-
- sortData() {
+  
+  sortData() {
     this.data.sort((a, b) => {
       const valueA = this.getValue(a, this.sortColumn);
       const valueB = this.getValue(b, this.sortColumn);
